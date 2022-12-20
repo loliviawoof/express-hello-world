@@ -29,6 +29,17 @@ app.get("/venues/find", async (req, res) => {
   }
 );
 
+app.get("/venues", async (req, res) => {
+  try{
+   const queryResult = await pgClient.query(
+    "SELECT * FROM venues")
+
+   res.json({venues : queryResult.rows })
+  } catch (e) {
+    res.status(500).json({error: e.message});
+  }
+  }
+);
 
 
 app.post("/reservation", async (req, res) => {
