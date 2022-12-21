@@ -49,7 +49,7 @@ app.post("/reservation", async (req, res) => {
       "INSERT INTO reservations (guess, venueId, wantsCaterin, reservationDate, customerName, email, phone, active) VALUES ($1, $2, $3, $4, $5, $6, $7, true) RETURNING reservation_id;",
       [body.guess, body.venueId, body.wantsCaterin, body.reservationDate, body.customerName, body.email, body.phone]
     )
-    res.json({reservations : queryResult.rows })
+    res.json({reservation_id : queryResult.rows[0].reservation_id })
    } catch (e) {
      res.status(500).json({error: e.message});
    }
