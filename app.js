@@ -41,6 +41,15 @@ app.get("/venues", async (req, res) => {
   }
 );
 
+app.get("/venues/:id", async (req, res) => {
+    try{
+      const queryResult = await pgClient.query("SELECT * FROM venues WHERE venue_id = $1", [req.params.id])
+      res.json({venue : queryResult.rows[0]})
+    } catch (e) {
+      res.status(500).json({error: e.message});
+    }
+  }
+  );
 
 app.post("/reservation", async (req, res) => {
   try{
