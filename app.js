@@ -133,11 +133,11 @@ app.get("/reservation", async (req, res) => {
   }
   );
 
-app.get("/reservation/:id", async (req, res) => {
+app.get("/reservations/:id", async (req, res) => {
   try{
     const queryResult = await pgClient.query("SELECT * FROM reservations WHERE reservation_id = $1", [req.params.id])
     
-    res.json({reservations : queryResult.rows })
+    res.json({reservations : queryResult.rows[0] })
   } catch (e) {
     res.status(500).json({error: e.message});
   }
