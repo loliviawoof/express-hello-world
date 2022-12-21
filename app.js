@@ -46,8 +46,8 @@ app.post("/reservation", async (req, res) => {
   try{
     const body = req.body;
     const queryResult = await pgClient.query(
-      "INSERT INTO reservations (guess, venueId, wantsCaterin, reservationDate, customerName, email, phone, active) VALUES ($1, $2, $3, $4, $5, $6, $7, true) RETURNING reservation_id;",
-      [body.guess, body.venueId, body.wantsCaterin, body.reservationDate, body.customerName, body.email, body.phone]
+      "INSERT INTO reservations (guess, venueId, wantsCaterin, reservationDate, customerName, email, phone, active, partyType) VALUES ($1, $2, $3, $4, $5, $6, $7, true, $8) RETURNING reservation_id;",
+      [body.guess, body.venueId, body.wantsCaterin, body.reservationDate, body.customerName, body.email, body.phone, body.partytype]
     )
     res.json({reservation_id : queryResult.rows[0].reservation_id })
    } catch (e) {
@@ -55,6 +55,74 @@ app.post("/reservation", async (req, res) => {
    }
 });
 
+
+app.get("/reservation", async (req, res) => {
+    try{
+      const queryResult = await pgClient.query("SELECT * FROM reservations")
+      let html = `<!DOCTYPE html>
+      <html>
+      <head>
+      <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+      </style>
+      </head>
+      <body>
+      
+      <h2>Reservations</h2>
+      
+      <table>
+        <tr>
+          <th>Id</th>
+          <th>Guests</th>
+          <th>Venue ID</th>
+          <th>Wants Caterin</th>
+          <th>Reservationdate</th>
+          <th>Customername</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Active</th>
+          <th>Party Type</th>
+        </tr>`;
+
+        queryResult.rows.forEach( row => {
+            html += `<tr>
+            <td>${row.reservation_id}</td>
+            <td>${row.guess}</td>
+            <td>${row.venueid}</td>
+            <td>${row.wantscaterin}</td>
+            <td>${row.reservationdate}</td>
+            <td>${row.customername}</td>
+            <td>${row.email}</td>
+            <td>${row.phone}</td>
+            <td>${row.active}</td>
+            <td>${row.partytype}</td>
+            </tr>`
+        })
+        html += `</table>
+
+        </body>
+        </html>`;
+      res.setHeader('Content-type','text/html');
+      res.send(html)
+    } catch (e) {
+      res.status(500).json({error: e.message});
+    }
+  }
+  );
 
 app.get("/reservation/:id", async (req, res) => {
   try{
