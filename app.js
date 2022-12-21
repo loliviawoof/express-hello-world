@@ -46,7 +46,7 @@ app.post("/reservation", async (req, res) => {
   try{
     const body = req.body;
     const queryResult = await pgClient.query(
-      "INSERT INTO reservations (guess, venueId, wantsCaterin, reservationDate, customerName, email, phone, active, partyType) VALUES ($1, $2, $3, $4, $5, $6, $7, true, $8) RETURNING reservation_id;",
+      "INSERT INTO reservations (guess, venueId, wantsCaterin, reservationDate, customerName, email, phone, active, partytype) VALUES ($1, $2, $3, $4, $5, $6, $7, true, $8) RETURNING reservation_id;",
       [body.guess, body.venueId, body.wantsCaterin, body.reservationDate, body.customerName, body.email, body.phone, body.partytype]
     )
     res.json({reservation_id : queryResult.rows[0].reservation_id })
