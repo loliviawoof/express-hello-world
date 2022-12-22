@@ -12,6 +12,31 @@ pgClient.connect()
 
 app.use(express.json())
 
+app.get("/", async (req, res) => {
+    try{
+      let html = `<script type="text/javascript" charset="utf-8">
+      (function (g, e, n, es, ys) {
+        g['_genesysJs'] = e;
+        g[e] = g[e] || function () {
+          (g[e].q = g[e].q || []).push(arguments)
+        };
+        g[e].t = 1 * new Date();
+        g[e].c = es;
+        ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+      })(window, 'Genesys', 'https://apps.usw2.pure.cloud/genesys-bootstrap/genesys.min.js', {
+        environment: 'usw2',
+        deploymentId: '3de7530a-914c-4f02-b613-f5ff719fa356'
+      });
+    </script>`;
+
+      res.setHeader('Content-type','text/html');
+      res.send(html)
+    } catch (e) {
+      res.status(500).json({error: e.message});
+    }
+  }
+  );
+
 app.get("/venues/find", async (req, res) => {
   try{
    const guest = req.query.guest
